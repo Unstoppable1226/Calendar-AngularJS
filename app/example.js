@@ -1,16 +1,21 @@
-angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
-angular
-  .module('mwl.calendar.docs') //you will need to declare your module with the dependencies ['mwl.calendar', 'ui.bootstrap', 'ngAnimate']
-  .controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
+var appPrincipal = angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
+
+var appCal = angular.module('mwl.calendar.docs') //you will need to declare your module with the dependencies ['mwl.calendar', 'ui.bootstrap', 'ngAnimate']
+
+appCal.config(['calendarConfig', function(calendarConfig) {
+  calendarConfig.dateFormatter = 'angular'; // use moment to format dates
+}]);
+
+appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
 
     var vm = this;
-
     //These variables MUST be set as a minimum for the calendar to work
     vm.calendarView = 'month';
     vm.viewDate = new Date();
     var actions = [{
       label: '<i class=\'glyphicon glyphicon-pencil\'></i>',
       onClick: function(args) {
+        console.log(args);
         alert.show('Edited', args.calendarEvent);
       }
     }, {
@@ -104,3 +109,5 @@ angular
     };
 
   });
+
+
