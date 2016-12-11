@@ -1,6 +1,7 @@
-var appPrincipal = angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module']);
+var appPrincipal = angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module', 'ngAria','ngMaterial']);
 
-var appCal = angular.module('mwl.calendar.docs') //you will need to declare your module with the dependencies ['mwl.calendar', 'ui.bootstrap', 'ngAnimate']
+var appCal = angular.module('mwl.calendar.docs');
+//you will need to declare your module with the dependencies ['mwl.calendar', 'ui.bootstrap', 'ngAnimate']
 
 appCal.config(['calendarConfig', function(calendarConfig) {
   calendarConfig.dateFormatter = 'angular'; // use moment to format dates
@@ -12,10 +13,12 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
     //These variables MUST be set as a minimum for the calendar to work
     vm.calendarView = 'month';
     vm.viewDate = new Date();
+
+    vm.persons = [{nom: 'Baptiste Bartolomei'}, {nom: 'Joel Marques'}];
+
     var actions = [{
       label: '<i class=\'glyphicon glyphicon-pencil\'></i>',
       onClick: function(args) {
-        console.log(args);
         alert.show('Edited', args.calendarEvent);
       }
     }, {
@@ -26,7 +29,7 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
     }];
     vm.events = [
       {
-        title: 'An event',
+        title: 'Baptiste Bartolomei',
         color: calendarConfig.colorTypes.warning,
         startsAt: moment().startOf('week').subtract(2, 'days').add(8, 'hours').toDate(),
         endsAt: moment().startOf('week').add(1, 'week').add(9, 'hours').toDate(),
@@ -34,7 +37,7 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
         resizable: true,
         actions: actions
       }, {
-        title: '<i class="glyphicon glyphicon-asterisk"></i> <span class="text-primary">Another event</span>, with a <i>html</i> title',
+        title: 'Joel Marques',
         color: calendarConfig.colorTypes.info,
         startsAt: moment().subtract(1, 'day').toDate(),
         endsAt: moment().add(5, 'days').toDate(),
@@ -42,7 +45,7 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
         resizable: true,
         actions: actions
       }, {
-        title: 'This is a really long event title that occurs on every year',
+        title: 'Vincent Jalley',
         color: calendarConfig.colorTypes.important,
         startsAt: moment().startOf('day').add(7, 'hours').toDate(),
         endsAt: moment().startOf('day').add(19, 'hours').toDate(),
@@ -57,7 +60,7 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
 
     vm.addEvent = function() {
       vm.events.push({
-        title: 'New event',
+        title: 'Un employé',
         startsAt: moment().startOf('day').toDate(),
         endsAt: moment().endOf('day').toDate(),
         color: calendarConfig.colorTypes.important,
@@ -67,7 +70,9 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
     };
 
     vm.eventClicked = function(event) {
-      alert.show('Clicked', event);
+
+      var res = alert.show('Clicked', event);
+      console.log(res);
     };
 
     vm.eventEdited = function(event) {

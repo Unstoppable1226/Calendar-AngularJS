@@ -1,1 +1,123 @@
-La fenetre est modale !
+<!DOCTYPE html>
+<html ng-app="mwl.calendar.docs">
+  <meta charset="utf-8"/>
+  <head>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.4/interact.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.0.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="//cdn.rawgit.com/jkbrzt/rrule/v2.1.0/lib/rrule.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.25/js/bootstrap-colorpicker-module.min.js"></script>
+   
+    <script type="text/javascript" src="js/angular-bootstrap-calendar-tpls.js"></script>
+    
+    <script type="text/javascript" src="js/angular-locale_fr-fr.js"></script>
+
+    <script type="text/javascript" src="app/app.js"></script>
+    <script type="text/javascript" src="app/modal.js"></script>
+
+    <!-- Angular Material Library -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.1/angular-material.min.js"></script>
+    
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.25/css/colorpicker.min.css" rel="stylesheet">
+    <link href="css/angular-bootstrap-calendar.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
+  </head>
+  <body>
+
+  	<h2 class="text-center">Informations sur {{vm.event.title}}</h2>
+			<table class="table table-bordered">
+
+			    <thead>
+			      <tr>
+			        <td>Titre</td>
+			        <td>Couleur</td>
+			        <!-- Commentaire <th>Secondary color</th> -->
+			        <td>Début à</td>
+			        <td>Fini à</th>
+			        <th>Supprimer</th>
+			      </tr>
+			    </thead>
+
+			    <tbody>
+			        <td>
+			          <input
+			            type="text"
+			            class="form-control"
+			            ng-model="vm.event.title">
+			        </td>
+			        <td>
+			          <input class="form-control" colorpicker type="text" ng-model="event.color.primary">
+			        </td>
+			        <!-- Commentaire <td>
+			          <input class="form-control" colorpicker type="text" ng-model="event.color.secondary">
+			        </td>-->
+			        <td>
+			          <p class="input-group" style="max-width: 250px">
+			            <input
+			              type="text"
+			              class="form-control"
+			              readonly
+			              uib-datepicker-popup="dd MMMM yyyy"
+			              ng-model="vm.event.startsAt"
+			              is-open="vm.event.startOpen"
+			              close-text="Close" >
+			            <span class="input-group-btn">
+			              <button
+			                type="button"
+			                class="btn btn-default"
+			                ng-click="vm.toggle($event, 'startOpen', vm.event)">
+			                <i class="glyphicon glyphicon-calendar"></i>
+			              </button>
+			            </span>
+			          </p>
+			          <div
+			            uib-timepicker
+			            ng-model="vm.event.startsAt"
+			            hour-step="1"
+			            minute-step="15"
+			            show-meridian="true">
+			          </div>
+			        </td>
+			        <td>
+			          <p class="input-group" style="max-width: 250px">
+			            <input
+			              type="text"
+			              class="form-control"
+			              readonly
+			              uib-datepicker-popup="dd MMMM yyyy"
+			              ng-model="vm.event.endsAt"
+			              is-open="vm.event.endOpen"
+			              close-text="Close">
+			            <span class="input-group-btn">
+			              <button
+			                type="button"
+			                class="btn btn-default"
+			                ng-click="vm.toggle($event, 'endOpen', vm.event)">
+			                <i class="glyphicon glyphicon-calendar"></i>
+			              </button>
+			            </span>
+			          </p>
+			          <div
+			            uib-timepicker
+			            ng-model="vm.event.endsAt"
+			            hour-step="1"
+			            minute-step="15"
+			            show-meridian="true">
+			          </div>
+			        </td>
+			        <td>
+			          <button
+			            class="btn btn-danger"
+			            ng-click="vm.supprimer()">
+			            Supprimer
+			          </button>
+			        </td>
+			      </tr>
+			    </tbody>
+			  </table>
+ </body>
+</html>
