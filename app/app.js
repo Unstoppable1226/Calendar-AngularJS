@@ -19,12 +19,12 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
     var actions = [{
       label: '<i class=\'glyphicon glyphicon-pencil\'></i>',
       onClick: function(args) {
-        alert.show('Edited', args.calendarEvent);
+        alert.show('Deleted', args.calendarEvent);      
       }
     }, {
       label: '<i class=\'glyphicon glyphicon-remove\'></i>',
       onClick: function(args) {
-        alert.show('Deleted', args.calendarEvent);
+        vm.events.splice(args.calendarEvent.calendarEventId, 1);
       }
     }];
     vm.events = [
