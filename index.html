@@ -1,5 +1,6 @@
-<!doctype html>
+<!DOCTYPE html>
 <html ng-app="mwl.calendar.docs">
+  <meta charset="utf-8"/>
   <head>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.4/interact.min.js"></script>
@@ -8,12 +9,13 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.0.0/ui-bootstrap-tpls.min.js"></script>
     <script src="//cdn.rawgit.com/jkbrzt/rrule/v2.1.0/lib/rrule.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.25/js/bootstrap-colorpicker-module.min.js"></script>
-    <script src="js/angular-bootstrap-calendar-tpls.min.js"></script>
+    <script src="js/angular-bootstrap-calendar-tpls.js"></script>
     <script src="app/example.js"></script>
     <script src="app/helpers.js"></script>
+    <script type="text/javascript" src="js/angular-locale_fr-fr.js"></script>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.25/css/colorpicker.min.css" rel="stylesheet">
-    <link href="css/angular-bootstrap-calendar.min.css" rel="stylesheet">
+    <link href="css/angular-bootstrap-calendar.css" rel="stylesheet">
   </head>
   <body>
 
@@ -31,7 +33,7 @@
           date="vm.viewDate"
           decrement="vm.calendarView"
           ng-click="vm.cellIsOpen = false">
-          Previous
+          Précédent
         </button>
         <button
           class="btn btn-default"
@@ -39,7 +41,7 @@
           date="vm.viewDate"
           set-to-today
           ng-click="vm.cellIsOpen = false">
-          Today
+          Aujourd'hui
         </button>
         <button
           class="btn btn-primary"
@@ -47,7 +49,7 @@
           date="vm.viewDate"
           increment="vm.calendarView"
           ng-click="vm.cellIsOpen = false">
-          Next
+          Suivant
         </button>
       </div>
     </div>
@@ -56,10 +58,10 @@
 
     <div class="col-md-6 text-center">
       <div class="btn-group">
-        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'year'" ng-click="vm.cellIsOpen = false">Year</label>
-        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'month'" ng-click="vm.cellIsOpen = false">Month</label>
-        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Week</label>
-        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'year'" ng-click="vm.cellIsOpen = false">Année</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'month'" ng-click="vm.cellIsOpen = false">Mois</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Semaine</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Jour</label>
       </div>
     </div>
 
@@ -76,7 +78,7 @@
     on-event-times-changed="vm.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
     cell-is-open="vm.cellIsOpen"
     day-view-start="06:00"
-    day-view-end="22:59"
+    day-view-end="23:59"
     day-view-split="30"
     cell-modifier="vm.modifyCell(calendarCell)"
     cell-auto-open-disabled="true"
@@ -85,6 +87,7 @@
 
   <br><br><br>
 
+<!-- Commentaire 
   <h3 id="event-editor">
     Edit events
     <button
@@ -94,6 +97,7 @@
     </button>
     <div class="clearfix"></div>
   </h3>
+
 
   <table class="table table-bordered">
 
@@ -187,7 +191,7 @@
     </tbody>
 
   </table>
-</div>
+</div> -->
 
   </body>
 </html>
