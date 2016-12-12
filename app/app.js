@@ -7,13 +7,14 @@ appCal.config(['calendarConfig', function(calendarConfig) {
   calendarConfig.dateFormatter = 'angular'; // use moment to format dates
 }]);
 
-appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
+appCal.controller('CalendarCtrl', function(moment, alert, calendarConfig) {
 
     var vm = this;
-    //These variables MUST be set as a minimum for the calendar to work
-    vm.calendarView = 'month';
-    vm.viewDate = new Date();
+    /* Ces deux variables doivent être définis sinon problème !! */
+    vm.calendarView = 'month'; // Définit l'affichage par défaut en 'mois'
+    vm.viewDate = new Date(); // Prend la date du jour
 
+    /* Récupérer les données des personnes et créer ainsi les horaires  */
     vm.persons = [{nom: 'Baptiste Bartolomei'}, {nom: 'Joel Marques'}];
 
     var actions = [{
@@ -27,6 +28,8 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
         vm.events.splice(args.calendarEvent.calendarEventId, 1);
       }
     }];
+
+    /* Toutes les dates configurées */
     vm.events = [
       {
         title: 'Baptiste Bartolomei',
@@ -94,7 +97,7 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
     };
 
     vm.timespanClicked = function(date, cell) {
-
+/*
       if (vm.calendarView === 'month') {
         if ((vm.cellIsOpen && moment(date).startOf('day').isSame(moment(vm.viewDate).startOf('day'))) || cell.events.length === 0 || !cell.inMonth) {
           vm.cellIsOpen = false;
@@ -109,7 +112,7 @@ appCal.controller('KitchenSinkCtrl', function(moment, alert, calendarConfig) {
           vm.cellIsOpen = true;
           vm.viewDate = date;
         }
-      }
+      } */
 
     };
 
