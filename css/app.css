@@ -17,7 +17,14 @@
 	background-color: #f5f5f5;
 }
 
+.centrer {
+	text-align: center;
+}
 
+.compCentrer {
+display: block;
+   margin : auto;
+}
 
 .bouton-np {
 	color: white;
@@ -27,4 +34,10 @@
 
 #tabFiltres td {
 	font-size: 18px!important;
+}
+
+.checkImg
+{
+    opacity:0.5;
+	color:#996;
 }
