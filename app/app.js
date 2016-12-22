@@ -6,6 +6,7 @@ var appCal = angular.module('mwl.calendar.docs');
 
 appCal.config(['calendarConfig', function(calendarConfig) {
   calendarConfig.dateFormatter = 'angular'; // use moment to format dates
+
 }]);
 
 appCal.controller('KitchenSinkCtrl', function($scope, moment, alert, calendarConfig, $http) {
@@ -14,54 +15,37 @@ appCal.controller('KitchenSinkCtrl', function($scope, moment, alert, calendarCon
     //These variables MUST be set as a minimum for the calendar to work
     vm.calendarView = 'month';
 
-    vm.events = [
-      {
-        title: 'Baptiste Bartolomei',
-        color: calendarConfig.colorTypes.warning,
-        startsAt: moment().startOf('week').subtract(2, 'days').add(8, 'hours').toDate(),
-        endsAt: moment().startOf('week').add(1, 'week').add(9, 'hours').toDate(),
-        draggable: true,
-        resizable: true,
-        actions: actions
-      }, {
-        title: 'Joel Marques',
-        color: calendarConfig.colorTypes.info,
-        startsAt: moment().subtract(1, 'day').toDate(),
-        endsAt: moment().add(5, 'days').toDate(),
-        draggable: true,
-        resizable: true,
-        actions: actions
-      }, {
-        title: 'Vincent Jalley',
-        color: calendarConfig.colorTypes.important,
-        startsAt: moment().startOf('day').add(7, 'hours').toDate(),
-        endsAt: moment().startOf('day').add(19, 'hours').toDate(),
-        recursOn: 'year',
-        draggable: true,
-        resizable: true,
-        actions: actions
-      }
-    ];
+    vm.events = [];
+
+    $scope.deps = [{}, {primary: '#00695c', secondary: '#00695c'}, {primary: '#388e3c', secondary: '#388e3c'},{primary: '#039be5', secondary: '#039be5'},{primary: '#f57c00', secondary: '#f57c00'},{primary: '#6d4c41', secondary: '#6d4c41'},{primary: '#512da8', secondary: '#512da8'},{primary: '#33691E', secondary: '#33691E'}, {primary: '#212121', secondary: '#212121'}];
+
+    $scope.getColor = function (pos) {
+      return $scope.deps[pos];
+    };
 
     $scope.getPersons = function () {
       var $res = $http.post("php/getPersonnesAPI.php");
       $res.then(function (message) {
         var tab = message.data;
-        for (var i = 0; i < tab.length; i++) {
-          var person = {
-                        title: tab[i].nom + " " + tab[i].prenom,
-                        color: calendarConfig.colorTypes.warning,
-                        startsAt: moment().startOf('week').subtract(2, 'days').add(8, 'hours').toDate(),
-                        endsAt: moment().startOf('week').add(1, 'week').add(9, 'hours').toDate(),
-                        draggable: true,
-                        resizable: true,
-                        actions: actions
-                      };
-          vm.events.push(person);
-        };
-        
+        if (message.data.length > 0) {
+          for (var i = 0; i < tab.length; i++) {
+            var person = {
+                          title: tab[i].nom + " " + tab[i].prenom,
+                          color: $scope.getColor(tab[i].dep_id),
+                          startsAt: moment().startOf('week').subtract(2, 'days').add(8, 'hours').toDate(),
+                          endsAt: moment().startOf('week').add(1, 'week').add(9, 'hours').toDate(),
+                          draggable: true,
+                          resizable: true,
+                          actions: actions
+                        };
+            vm.events.push(person);
+          };
+        }
       });
     }
+
+
+
     $scope.getPersons();
 
     $scope.varia = "Ici";
