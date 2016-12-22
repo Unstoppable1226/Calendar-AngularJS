@@ -1,0 +1,95 @@
+[
+{
+    "nom"
+       :"Joel Marques",
+    "dep"
+       :"Cuisine",
+    "poste"
+       :"Cuisinier",
+    "jourTravails" : [
+    	{"date":"12/12/2016",
+    	"heureDebut":"8:30",
+    	"heureFin":"22:30",
+    	"pauseDebut":"12:00",
+    	"pauseFin":"14:00"},
+
+    	{"date":"14/12/2016",
+    	"heureDebut":"8:30",
+    	"heureFin":"22:30",
+    	"pauseDebut":"12:00",
+    	"pauseFin":"14:00"},
+
+    	{"date":"17/12/2016",
+    	"heureDebut":"8:30",
+    	"heureFin":"22:30",
+    	"pauseDebut":"13:00",
+    	"pauseFin":"15:00"},
+
+    	{"date":"21/12/2016",
+    	"heureDebut":"10:30",
+    	"heureFin":"21:30",
+    	"pauseDebut":"12:00",
+    	"pauseFin":"14:00"}
+    ] 
+},
+{
+	"nom"
+       :"Vincent Jalley",
+    "dep"
+       :"Cuisine",
+    "poste"
+       :"Serveur",
+    "jourTravails" : [
+    	{"date":"14/12/2016",
+    	"heureDebut":"8:30",
+    	"heureFin":"22:30",
+    	"pauseDebut":"12:00",
+    	"pauseFin":"14:00"},
+
+    	{"date":"8/12/2016",
+    	"heureDebut":"8:30",
+    	"heureFin":"22:30",
+    	"pauseDebut":"12:00",
+    	"pauseFin":"14:00"},
+
+    	{"date":"25/12/2016",
+    	"heureDebut":"8:30",
+    	"heureFin":"22:30",
+    	"pauseDebut":"13:00",
+    	"pauseFin":"15:00"},
+
+    	{"date":"22/12/2016",
+    	"heureDebut":"10:30",
+    	"heureFin":"21:30",
+    	"pauseDebut":"12:00",
+    	"pauseFin":"14:00"}
+    ]
+},
+{
+	"nom"
+       :"Dany Gomes",
+    "dep"
+       :"Bar",
+    "poste"
+       :"Serveur",
+    "jourTravails" : [
+    	{"date":"8/12/2016",
+    	"heureDebut":"9:30",
+    	"heureFin":"21:30",
+    	"pauseDebut":"12:00",
+    	"pauseFin":"14:00"},
+
+    	{"date":"9/12/2016",
+    	"heureDebut":"8:30",
+    	"heureFin":"23:30",
+    	"pauseDebut":"12:00",
+    	"pauseFin":"14:00"},
+
+    	{"date":"11/12/2016",
+    	"heureDebut":"8:30",
+    	"heureFin":"22:30",
+    	"pauseDebut":"13:00",
+    	"pauseFin":"15:00"}
+    ]
+}
+]
