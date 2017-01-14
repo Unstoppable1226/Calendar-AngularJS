@@ -1,10 +1,10 @@
 <?php
 
 	require_once("classes/Sanitizer.php");
-	require_once("classes/Personne.php");
+	require_once("classes/PersonneDAO.php");
 	$eta_id = Sanitizer::getSanitizedJSInput();
 
-	$res = Personne::getPersonne($eta_id['eta_id']); // Récupère le résulat obtenu
+	$res = PersonneDAO::getPersonne($eta_id['eta_id']); // Récupère le résulat obtenu
 
 	echo(json_encode($res)); // Retourner le résultat sous format json
 ?>

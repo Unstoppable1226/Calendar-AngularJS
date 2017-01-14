@@ -5,7 +5,7 @@ require_once("MySQLManager.php");
 * Personne - Classe PHP
 * Gestion du CRUD pour une personne - (Mis en place - SELECT)
 */
-class Personne {
+class PersonneDAO {
 	
 	public static function getPersonne ($eta_id) {
 		$db = MySQLManager::get();
@@ -19,6 +19,7 @@ class Personne {
 		    /* Récupération des valeurs */
 		    $array = array();
 		    $person = [];
+		   	$hors = array();
 		    while($stmt->fetch()) {
 		    	$person['id'] = $per_id;
 		        $person['nom'] = $per_nom;
@@ -27,10 +28,10 @@ class Personne {
 		        $person['genre'] = $per_genre;
 		        $person['dep_id'] = $dep_id;
 		        $person['dep_nom'] = $dep_nom;
-		        $array[] = $person; 
+				$array[] = $person;
 		    }
-		  	$stmt->close();
-		  	MySQLManager::close();
+		    $stmt->close();
+		    MySQLManager::close();
 	  		return $array;
 		}
 		MySQLManager::close();

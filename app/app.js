@@ -1,86 +1,102 @@
 (function(){
+
+// Déclarer les dépendances au module ['mwl.calendar', 'ui.bootstrap', 'ngAnimate']
 var appPrincipal = angular.module('mwl.calendar.docs', ['mwl.calendar', 'ngAnimate', 'ui.bootstrap', 'colorpicker.module', 'ngAria','ngMaterial']);
 
 var appCal = angular.module('mwl.calendar.docs');
-//you will need to declare your module with the dependencies ['mwl.calendar', 'ui.bootstrap', 'ngAnimate']
+
 
 appCal.config(['calendarConfig', function(calendarConfig) {
-  calendarConfig.dateFormatter = 'angular'; // use moment to format dates
-
+  calendarConfig.dateFormatter = 'angular'; // Utiliser par défaut 'Angular' pour le format des dates
 }]);
 
-appCal.controller('KitchenSinkCtrl', function($scope, moment, alert, calendarConfig, $http) {
 
-    var vm = this;
-    //These variables MUST be set as a minimum for the calendar to work
-    vm.calendarView = 'month';
+/* 
+* Contrôleur de l'application - KitchenSinkCtrl
+* Paramètres : $scope, moment (pour les dates), alert (pour les fenêres modales), calendarConfig (Objet du calendrier), $http (Requêtes HTTP)
+* Gère le calendrier
+*/
+appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, calendarConfig, $http) {
 
-    vm.events = [];
+    var vm = this; // Je prend la référence de moi-même et je la stocke
 
-    $scope.deps = [{}, {primary: '#00695c', secondary: '#00695c'}, {primary: '#388e3c', secondary: '#388e3c'},{primary: '#039be5', secondary: '#039be5'},{primary: '#f57c00', secondary: '#f57c00'},{primary: '#6d4c41', secondary: '#6d4c41'},{primary: '#512da8', secondary: '#512da8'},{primary: '#33691E', secondary: '#33691E'}, {primary: '#212121', secondary: '#212121'}];
+    /*****************************************************************************/
+    /* Ces variables doivent être défini sinon le calendrier ne fonctionnera pas */
 
-    $scope.getColor = function (pos) {
-      return $scope.deps[pos];
+    vm.viewDate = new Date(); // Défini la date d'aujourd'hui
+    vm.calendarView = 'month'; // Vue par défaut : 'Mois'
+    vm.cellIsOpen = false; // La cellule d'aujourd'hui est ouverte
+    vm.events = []; // Liste des évennements (Horaires des personnes)
+
+    $scope.deps = [ // Stocke les codes couleurs nécessaires pour les départements
+      {}, // Premier objet vide
+      {primary: '#00695c', secondary: '#00695c'}, 
+      {primary: '#388e3c', secondary: '#388e3c'},
+      {primary: '#039be5', secondary: '#039be5'},
+      {primary: '#f57c00', secondary: '#f57c00'},
+      {primary: '#6d4c41', secondary: '#6d4c41'},
+      {primary: '#512da8', secondary: '#512da8'},
+      {primary: '#33691E', secondary: '#33691E'}, 
+      {primary: '#212121', secondary: '#212121'}
+    ];
+
+    $scope.persons = [];
+
+    var getTime = function (time) {
+      var objTime = time.split(':');
+      return {'heures' : objTime[0], 'minutes' : objTime[1], 'secondes' : objTime[2]};
+    }
+
+    /* Récupère l'objet couleur selon l'id du départements */
+    $scope.getColor = function (id) {
+      return $scope.deps[id];
     };
 
-    $scope.getPersons = function () {
-      var data = {'eta_id' : 1};
-      var $res = $http.post("php/getPersonnesAPI.php", data);
-      $res.then(function (message) {
-
-        var tab = message.data;
-        if (message.data.length > 0) {
-          for (var i = 0; i < tab.length; i++) {
-            var person = {
-                          title: tab[i].nom + " " + tab[i].prenom,
-                          color: $scope.getColor(tab[i].dep_id),
-                          startsAt: moment().startOf('week').subtract(2, 'days').add(8, 'hours').toDate(),
-                          endsAt: moment().startOf('week').add(1, 'week').add(9, 'hours').toDate(),
-                          draggable: true,
-                          resizable: true,
-                          actions: actions
-                        };
-            vm.events.push(person);
-          };
+    var getHoraires = function (personne) {
+      var $req = $http.post("php/getHorairesPersonnesAPI.php", {'per_id': personne.id});
+      $req.then(function (message) {
+        tabHoraires = message.data;
+        if (tabHoraires.length > 0) { // Si l'employé n'a pas d'horaires n'ajoute rien au calendrier
+          for (var i = 0; i < tabHoraires.length; i++) {
+            var hor = tabHoraires[i];
+            var heureDebut = getTime(hor.heureDebut);
+            var heureFin = getTime(hor.heureFin);
+            var dateDebut = moment(new Date(hor.date)).subtract(1, 'hours'); // On enleve une heure, car GMT+1
+            var dateFin = moment(new Date(hor.date)).subtract(1, 'hours'); // On enleve une heure, car GMT+1
+            var horaire = {
+                      title: personne.nom + " " + personne.prenom,
+                      color: $scope.getColor(personne.dep_id),
+                      startsAt: dateDebut.add(heureDebut.heures, 'hours').add(heureDebut.minutes, 'minutes').toDate(),
+                      endsAt: dateFin.add(heureFin.heures, 'hours').add(heureFin.minutes, 'minutes').toDate(),
+                      draggable: true,
+                      resizable: true,
+                      actions: actions
+                    };
+            vm.events.push(horaire);
+          }
         }
       });
     }
 
+    /* Récupère les personnes avec leurs horaires et initialise le calendrier */
+    $scope.getPersons = function () {
+      var $res = $http.post("php/getPersonnesAPI.php", {'eta_id' : 1}); // Envoie de la requête en 'POST'
+      
+      $res.then(function (message) { // Réponse de la promesse
 
+        var tabPerson = message.data; // Stocke le tableau d'objet
+        $scope.persons = tabPerson; // Stocker les personnes dans le scope
 
-    $scope.getPersons();
+        if (message.data.length > 0) { // Si il y a des données
+          for (var i = 0; i < tabPerson.length; i++) {
+            getHoraires(tabPerson[i]);
+          } 
+        }
+      });
 
-    $scope.varia = "Ici";
-    vm.viewDate = new Date();
-       $scope.dynamicPopover = {
-        content: 'Hello, World!',
-        templateUrl: 'myPopoverTemplate.html',
-        title: 'Title'
-      };
+    } // Fin getPerson()
 
-      $scope.placement = {
-        options: [
-          'top',
-          'top-left',
-          'top-right',
-          'bottom',
-          'bottom-left',
-          'bottom-right',
-          'left',
-          'left-top',
-          'left-bottom',
-          'right',
-          'right-top',
-          'right-bottom'
-        ],
-        selected: 'bottom'
-      };
-
-    $scope.choixDep = function(ev) {
-      $(ev.target).toggleClass("checkImg");
-    };
-
-    vm.persons = [{nom: 'Baptiste Bartolomei'}, {nom: 'Joel Marques'}];
+    $scope.getPersons(); // Initialiser le calendrier avec les données des horaires
 
     var actions = [{
       label: '<i class=\'glyphicon glyphicon-pencil\'></i>',
@@ -93,9 +109,6 @@ appCal.controller('KitchenSinkCtrl', function($scope, moment, alert, calendarCon
         alert.show('Deleted', args.calendarEvent);
       }
     }];
-    
-
-    vm.cellIsOpen = true;
 
     vm.addEvent = function() {
       vm.events.push({
