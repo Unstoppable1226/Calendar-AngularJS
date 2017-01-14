@@ -1,52 +1,30 @@
 <?php
 /**
- * mysqlmanager.inc.php contains the class handling the
- * mysql database connections.
+ * MySQLManager - Classe PHP
+ * Elle s'occupe de créer l'instance mysqli, de la fermer et de la retourner
  */
 
 require_once("InfoDatabase.php");
-/**
- * MySQLManager is a wrapper class for database handling
- *
- * @access public
- */
+
 class MySQLManager {
-	/**
-	 * Once connection is established it will contain a handle object
-	 *
-	 * @access private
-	 * @static
-	 * @var mysqli
-	 */
-	private static $dbhandle = NULL;
-	/**
-	 * Provides a handle on the database connection
-	 *
-	 * @access public
-	 * @static
-	 * @return mysqli Handle on database or NULL
-	 */
+
+	private static $db = NULL;
+
 	public static function get() {
-		if (self::$dbhandle == NULL) {
-			self::$dbhandle = new mysqli(SERVER, USER, PASS, DATABASE);
-			if (self::$dbhandle->connect_error) {
+		if (self::$db == NULL) {
+			self::$db = new mysqli(SERVER, USER, PASS, DATABASE);
+			if (self::$db->connect_error) {
 				die("Impossible de se connecter à la base");
-				self::$dbhandle = NULL;
+				self::$db = NULL;
 			}
 		}
-		return self::$dbhandle;
+		return self::$db;
 	}
-	
-	/**
-	 * Closes the database connection
-	 *
-	 * @access public
-	 * @static
-	 */
+
 	public static function close() {
-		if (self::$dbhandle != NULL) {
-			self::$dbhandle->close();
-			self::$dbhandle = NULL;
+		if (self::$db != NULL) {
+			self::$db->close();
+			self::$db = NULL;
 		}
 	}
 }

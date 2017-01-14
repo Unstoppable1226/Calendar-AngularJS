@@ -2,7 +2,8 @@
 
 require_once("MySQLManager.php");
 /**
-* 	
+* Personne - Classe PHP
+* Gestion du CRUD pour une personne - (Mis en place - SELECT)
 */
 class Personne {
 	
