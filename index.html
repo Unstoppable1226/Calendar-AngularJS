@@ -9,6 +9,10 @@
     <link href="css/angular-bootstrap-calendar.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/app.css">
     <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.4/interact.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
@@ -73,6 +77,39 @@
 </div>
 
 <hr>
+
+<div>
+  
+
+</div>
+
+<div class="row">
+  <br class="visible-xs visible-sm">
+   
+  <div class="col-md-12 text-center">
+    <div class="col-md-6 margin-bottom">
+      <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#addHoraire">Ajouter Horaire  <span class="glyphicon glyphicon-time" aria-hidden="true"> </span></button>
+    </div>
+   
+    <div class="col-md-6">
+      <div class="btn-group right">
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'year'" ng-click="vm.cellIsOpen = false">Année</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'month'" ng-click="vm.cellIsOpen = false">Mois</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Semaine</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Jour</label>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div id="addHoraire" class="collapse">
+  <hr>
+  fasf
+</div>
+
+<hr>
   
 
   <div class="row">
@@ -102,15 +139,7 @@
     </div>
   </div>
   <div>
-    <br class="visible-xs visible-sm">
-  <!-- Commentaire 
-    <div class="col-md-6 text-center">
-      <div class="btn-group">
-        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'month'" ng-click="vm.cellIsOpen = false">Mois</label>
-        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Semaine</label>
-        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Jour</label>
-      </div>
-    </div> -->
+    
 
   </div>
 
