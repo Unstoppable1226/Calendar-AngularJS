@@ -7,25 +7,27 @@ require_once("MySQLManager.php");
 */
 class Personne {
 	
-	public static function getPersonne () {
+	public static function getPersonne ($eta_id) {
 		$db = MySQLManager::get();
-		$query = "SELECT per_nom, per_prenom, per_admin, per_dep_id, per_genre, dep_nom FROM ccn_personne JOIN ccn_departement ON dep_id = per_dep_id";
+		$query = "SELECT per_id, per_nom, per_prenom, per_admin, per_genre, dep_id, dep_nom FROM ccn_etablissement JOIN ccn_departement ON eta_id = dep_eta_id JOIN ccn_possede ON dep_id = pos_dep_id JOIN ccn_personne ON per_id = pos_per_id WHERE per_admin = 0 AND eta_id = ?";
 		if ($stmt = $db->prepare($query)) {
+			$stmt->bind_param('i', $eta_id);
 			/* Exécution de la requête */
 		    $stmt->execute();
 		    /* Lecture des variables résultantes */
-		    $stmt->bind_result($per_nom, $per_prenom, $per_admin, $per_dep_id, $per_genre, $dep_nom);
+		    $stmt->bind_result($per_id, $per_nom, $per_prenom, $per_admin, $per_genre, $dep_id, $dep_nom);
 		    /* Récupération des valeurs */
 		    $array = array();
 		    $person = [];
 		    while($stmt->fetch()) {
+		    	$person['id'] = $per_id;
 		        $person['nom'] = $per_nom;
 		        $person['prenom'] = $per_prenom;
 		        $person['admin'] = $per_admin;
-		        $person['dep_id'] = $per_dep_id;
 		        $person['genre'] = $per_genre;
+		        $person['dep_id'] = $dep_id;
 		        $person['dep_nom'] = $dep_nom;
-		        $array[] = $person;
+		        $array[] = $person; 
 		    }
 		  	$stmt->close();
 		  	MySQLManager::close();

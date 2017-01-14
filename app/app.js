@@ -24,8 +24,10 @@ appCal.controller('KitchenSinkCtrl', function($scope, moment, alert, calendarCon
     };
 
     $scope.getPersons = function () {
-      var $res = $http.post("php/getPersonnesAPI.php");
+      var data = {'eta_id' : 1};
+      var $res = $http.post("php/getPersonnesAPI.php", data);
       $res.then(function (message) {
+
         var tab = message.data;
         if (message.data.length > 0) {
           for (var i = 0; i < tab.length; i++) {
