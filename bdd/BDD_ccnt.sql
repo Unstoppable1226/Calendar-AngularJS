@@ -254,6 +254,15 @@ CREATE TABLE `ccnt`.`ccn_travail` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `ccnt`.`ccn_poste`
+-- -----------------------------------------------------
+CREATE TABLE `ccnt`.`ccn_poste` ( 
+  `pos_id` INT NOT NULL , 
+  `pos_nom` VARCHAR(50) NOT NULL , 
+PRIMARY KEY (`pos_id`)) ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

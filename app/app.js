@@ -46,6 +46,47 @@ appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, c
     $scope.depSel = "";
     $scope.styleDep = {'color': 'black'};
 
+    $scope.personsDeps = [];
+    $scope.personsSel = [];
+
+    var getInfoEvent = function (nomPrenom) {
+      var person = null;
+      for (var i = 0; i < $scope.persons.length; i++) {
+        var nom = $scope.persons[i].nom + " " + $scope.persons[i].prenom;
+        if (nom == nomPrenom) {
+          person = $scope.persons[i];
+        }
+      }
+      return person;
+    }
+
+    var actions = [{
+      label: '<i class=\'glyphicon glyphicon-pencil\'></i>',
+      onClick: function(args) {
+        alert.show('Edited', args.calendarEvent, $scope);
+      }
+    }, {
+      label: '<i class=\'glyphicon glyphicon-remove\'></i>',
+      onClick: function(args) {
+        //alert.show('Deleted', args.calendarEvent);
+        var person = getInfoEvent(args.calendarEvent.title);
+        var objDate = args.calendarEvent;
+        var heureDebut = getTimeDate(objDate.startsAt);
+        var heureFin = getTimeDate(objDate.endsAt);
+        var dateDebut = getDateBDD(objDate.startsAt);
+
+        var $req = $http.post("php/supprimerHorairePersonneAPI.php", {'per_id': person.id, 'date' : dateDebut, 'heureDebut' : heureDebut, 'heureFin': heureFin});
+        $req.then(function (message) {
+          if (message.data != null) {
+            vm.events.splice(args.calendarEvent.calendarEventId, 1);
+            NotifService.success('Suppression Horaire', "L'horaire : " + dateDebut + " de l'employé : " + person.nom + " " + person.prenom + " a été supprimé avec succès");
+          } else {
+            NotifService.success('Suppression Horaire', "L'horaire n'a pas pu être supprimé");
+          }
+        }); 
+      }     
+    }];
+
     $scope.event = {
       title: '',
       startsAt: moment().startOf('day').toDate(),
@@ -53,29 +94,122 @@ appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, c
       color: calendarConfig.colorTypes.important,
       draggable: true,
       resizable: true,
-      actions : actions
+      actions : actions,
     };
 
+    var reinitEvent = function () {
+      $scope.event = { // Réinitialiser l'objet
+          title: '',
+          startsAt: moment().startOf('day').toDate(),
+          endsAt: moment().endOf('day').toDate(),
+          color: calendarConfig.colorTypes.important,
+          draggable: true,
+          resizable: true,
+          actions : actions
+        };
+      $scope.myPerson = null;
+      $scope.depSel = "";
+      $scope.styleDep = {'color': 'black'};
+    }
 
-    $scope.majAffDep = function(item) {
+    var searchDepID = function (idDep) {
       var pos = -1;
-      //console.log(item);
       for (var i = 0; i < $scope.departmentsSel.length; i++) {
-        if ($scope.departmentsSel[i].id == item.id) {
+        if ($scope.departmentsSel[i].id == idDep) {
           pos = i;
         }
       }
+      return pos;
+    }
+
+    var searchDepNom = function (nom) {
+      var pos = -1;
+      for (var i = 0; i < $scope.departmentsSel.length; i++) {
+        if ($scope.departmentsSel[i].nom == nom) {
+          pos = i;
+        }
+      }
+      return pos;
+    }
+
+    var searchPersonID = function (idP) {
+      var pos = -1;
+      for (var i = 0; i < $scope.personsSel.length; i++) {
+        if ($scope.personsSel[i].id == idP) {
+          pos = i;
+        }
+      }
+      return pos;
+    }
+
+    var virerEmployeDep = function (item) {
+      for (var i = $scope.personsDeps.length - 1; i >= 0; i--) {
+        if ($scope.personsDeps[i].dep_id == item.id) {
+          $scope.personsDeps.splice(i, 1);
+        }
+      }
+    }
+
+    var virerEmployeDep = function (dep) {
+      for (var i = $scope.personsDeps.length - 1; i >= 0; i--) {
+        if ($scope.personsDeps[i].dep_id == dep.id) {
+          var pos = searchPersonID($scope.personsDeps[i].id);
+          if (pos != -1) {
+            $scope.personsSel.splice(pos, 1);
+          }
+          $scope.personsDeps.splice(i, 1);
+        }
+      }
+    }
+
+    var ajouterEmployeDep = function (dep) {
+      for (var i = 0; i < $scope.persons.length; i++) {
+        if ($scope.persons[i].dep_id == dep.id) {
+          $scope.personsDeps.push($scope.persons[i]);
+          $scope.personsSel.push($scope.persons[i]);
+        }
+      }
+    }
+
+
+
+    $scope.majAffDep = function(dep) {
+      var pos = searchDepID(dep.id);
+
       if (pos != -1) {
         $scope.departmentsSel.splice(pos, 1);
+        virerEmployeDep(dep);
       } else {
-        $scope.departmentsSel.push(item);
+        $scope.departmentsSel.push(dep);
+        ajouterEmployeDep(dep);
       }
-      var $req = $http.post("php/getPersonnesFiltreAPI.php", {'eta_id': 1, 'deps' : $scope.departmentsSel});
+
+      vm.events.splice(0, vm.events.length); // Supprimer l'affichage
+      var $req = $http.post("php/getPersonnesFiltreDepAPI.php", {'eta_id': 1, 'deps' : $scope.departmentsSel});
       $req.then(function (message) {
-        console.log(message.data);
+        var tabPerson = message.data;
         if (message.data.length > 0) { // Si il y a des données
           for (var i = 0; i < tabPerson.length; i++) {
-            $scope.persons.push(tabPerson[i]);
+            console.log(tabPerson);
+            getHoraires(tabPerson[i]);
+          }
+        }
+      });
+    }
+
+    $scope.majAffPers = function (person) {
+      var pos = searchPersonID(person.id);
+      if (pos != -1) {
+        $scope.personsSel.splice(pos, 1);
+      } else {
+        $scope.personsSel.push(person);
+      }
+      vm.events.splice(0, vm.events.length); // Supprimer l'affichage
+      var $req = $http.post("php/getPersonnesFiltreEmpAPI.php", {'eta_id': 1, 'deps' : $scope.departmentsSel, 'emps' : $scope.personsSel});
+      $req.then(function (message) {
+        var tabPerson = message.data;
+        if (message.data.length > 0) { // Si il y a des données
+          for (var i = 0; i < tabPerson.length; i++) {
             getHoraires(tabPerson[i]);
           }
         }
@@ -150,16 +284,21 @@ appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, c
             var horaire = {
                       title: personne.nom + " " + personne.prenom,
                       color: $scope.getColor(personne.dep_id),
-                      startsAt: dateDebut.add(heureDebut.heures, 'hours').add(heureDebut.minutes, 'minutes').toDate(),
-                      endsAt: dateFin.add(heureFin.heures, 'hours').add(heureFin.minutes, 'minutes').toDate(),
+                      startsAt: dateDebut.add(heureDebut.heures, 'hours').add(heureDebut.minutes, 'minutes').add(heureDebut.secondes, 'seconds').toDate(),
+                      endsAt: dateFin.add(heureFin.heures, 'hours').add(heureFin.minutes, 'minutes').add(heureFin.secondes, 'seconds').toDate(),
                       draggable: true,
                       resizable: true,
-                      actions: actions
+                      actions: actions,
                     };
             vm.events.push(horaire);
           }
         }
       });
+    }
+
+    /* Récupère un string : yyyy-mm-dd Pour la base de données */
+    var getDateBDD = function (date) {
+      return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
     }
 
     $scope.addHoraire = function () {
@@ -178,26 +317,19 @@ appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, c
         var objHeureFin = getTime(heureFin);
         dateFin = moment(dateFin).add(objHeureFin.heures, 'hours').add(objHeureFin.minutes, 'minutes').add(objHeureFin.secondes, 'seconds').toDate();
         $scope.event.endsAt = dateFin;
-        vm.events.push($scope.event);
+        
+        var pos = searchDepNom($scope.depSel);
+
+        if (pos != -1) {vm.events.push($scope.event);}
+
+        /* Insérer le département */
+        var $res = $http.post("php/insertHorairePersonneAPI.php", {'per_id': $scope.myPerson, 'date': getDateBDD(dateDebut), 'heureDebut': heureDebut, 'heureFin': heureFin}); // Envoie de la requête en 'POST'
+        $res.then(function (message) {
+          console.log(message.data);
+        });
 
         NotifService.success('Ajout Horaire', "L'horaire pour l'employé : " + $scope.event.title + " a été ajouté avec succès");
-
-        $scope.event = { // Réinitialiser l'objet
-          title: '',
-          startsAt: moment().startOf('day').toDate(),
-          endsAt: moment().endOf('day').toDate(),
-          color: calendarConfig.colorTypes.important,
-          draggable: true,
-          resizable: true,
-          actions : actions
-        };
-
-        $scope.myPerson = null;
-        $scope.depSel = "";
-        $scope.styleDep = {'color': 'black'};
-
-      } else {
-
+        reinitEvent();
       }
     }
 
@@ -208,11 +340,13 @@ appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, c
       $res.then(function (message) { // Réponse de la promesse
 
         var tabPerson = message.data; // Stocke le tableau d'objet
-
         if (message.data.length > 0) { // Si il y a des données
           for (var i = 0; i < tabPerson.length; i++) {
             $scope.persons.push(tabPerson[i]);
+            $scope.personsDeps.push(tabPerson[i]);
+            $scope.personsSel.push(tabPerson[i]);
             getHoraires(tabPerson[i]);
+
           }
         }
       });
@@ -221,17 +355,7 @@ appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, c
 
     $scope.getPersons(); // Initialiser le calendrier avec les données des horaires
     
-    var actions = [{
-      label: '<i class=\'glyphicon glyphicon-pencil\'></i>',
-      onClick: function(args) {
-        alert.show('Edited', args.calendarEvent);
-      }
-    }, {
-      label: '<i class=\'glyphicon glyphicon-remove\'></i>',
-      onClick: function(args) {
-        alert.show('Deleted', args.calendarEvent);
-      }
-    }];
+    
 
     vm.addEvent = function() {
       vm.events.push({
@@ -240,14 +364,14 @@ appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, c
         endsAt: moment().endOf('day').toDate(),
         color: calendarConfig.colorTypes.important,
         draggable: true,
-        resizable: true
+        resizable: true,
+        actions : actions,
       });
     };
 
     vm.eventClicked = function(event) {
 
       var res = alert.show('Clicked', event);
-      console.log(res);
     };
 
     vm.eventEdited = function(event) {
@@ -255,7 +379,8 @@ appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, c
     };
 
     vm.eventDeleted = function(event) {
-      alert.show('Deleted', event);
+      /*alert.show('Deleted', event);
+      console.log(event); */
     };
 
     vm.eventTimesChanged = function(event) {

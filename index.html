@@ -87,16 +87,16 @@
           </thead>
           <tbody>
             <tr>
-              <td class="searchable-container" ng-repeat="item in departments">
+              <td class="searchable-container" ng-repeat="dep in departments track by $index">
                 <div class="items col-xs-12">
                     <div class="info-block block-info clearfix">
                         
-                        <div data-toggle="buttons" ng-click="majAffDep(item)" class="btn-group bizmoduleselect">
-                            <label class="btn btn-default active">
+                        <div data-toggle="buttons" ng-click="majAffDep(dep)" class="btn-group bizmoduleselect">
+                            <label id="{{dep.id}}" class="btn btn-default{{dep.id}} active">
                                 <div class="bizcontent">
                                     <input type="checkbox" name="var_id[]" autocomplete="off" value="">
                                     <span class="glyphicon glyphicon-ok glyphicon-lg"></span>
-                                    <h5>{{item.nom}}</h5>
+                                    <h5>{{dep.nom}}</h5>
                                 </div>
                             </label>
                         </div>
@@ -114,12 +114,27 @@
     <div class="col-md-6">
       <table class="table table-bordered centrer">
           <thead>
-            <th colspan="8" class="centrer">Métiers</th>
+            <th colspan="8" class="centrer">Employés</th>
           </thead>
           <tbody>
             <tr>
-              <td ng-repeat="item in metiers">{{item.nom}}</td>
-              <td ng-if="metiers.length == 0"> Aucun département</td>
+               <td class="searchable-container" ng-repeat="person in personsDeps track by $index">
+                <div class="items col-xs-12">
+                    <div class="info-block block-info clearfix">
+                        
+                        <div data-toggle="buttons" ng-click="majAffPers(person)" class="btn-group bizmoduleselect">
+                            <label class="btn btn-default active">
+                                <div class="bizcontent">
+                                    <input type="checkbox" name="var_id[]" autocomplete="off" value="">
+                                    <span class="glyphicon glyphicon-ok glyphicon-lg"></span>
+                                    <h5>{{person.nom}}</h5>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+              </td>
             </tr>
           </tbody>
         </table>
@@ -135,7 +150,7 @@
    
   <div class="col-md-12 text-center">
     <div class="col-md-6 margin-bottom">
-      <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#addHoraire">Ajouter Horaire  <span class="glyphicon glyphicon-time" aria-hidden="true"> </span></button>
+      <button type="button" class="btn btnGris" data-toggle="collapse" data-target="#addHoraire">Ajouter Horaire  <span class="glyphicon glyphicon-time" aria-hidden="true"> </span></button>
     </div>
    
     <div class="col-md-6">
@@ -170,8 +185,8 @@
           <i class="fa fa-circle" style="font-size:25px" ng-style="styleDep"></i><span style="font-size: 15px;margin-left: 8px;font-weight: bold">{{depSel}}</span>
         </td>
         <td>  
-          <select class="form-control" ng-change="majPerson()" ng-model="myPerson" style="width: 150px">
-            <option ng-repeat="person in persons" value="{{person.id}}">{{person.nom}} {{person.prenom}}</option>
+          <select class="form-control" ng-change="majPerson()" ng-model="myPerson" style="width: 200px">
+            <option ng-repeat="person in persons track by $index" value="{{person.id}}">{{person.nom}} {{person.prenom}}</option>
           </select>
           <span ng-if="myPerson == null" style="color:red">Veuillez choisir un employé !</span>
         </td>
@@ -219,7 +234,7 @@
   </table>
 
   <div class="centrer">
-      <button type="button" class="btn btn-primary" ng-click="addHoraire()">Ajouter</button>
+      <button type="button" class="btn btnGris" ng-click="addHoraire()">Ajouter</button>
     </div>
 </div>
 
