@@ -3,16 +3,24 @@
   <meta charset="utf-8"/>
   <head>
 
-    
+    <!-- CSS de l'application -->
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.25/css/colorpicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="css/angular-bootstrap-calendar.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">
+    <link rel="stylesheet" type="text/css" href="css/angular-ui-notification.min.css"> 
+    
+    <!-- JQuery -->
     <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <!-- Bootstrap - Javascript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-
+    <!--  Librairies externes (Angular) -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.4/interact.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
@@ -20,13 +28,18 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.3.1/ui-bootstrap-tpls.min.js"></script>
     <script src="//cdn.rawgit.com/jkbrzt/rrule/v2.1.0/lib/rrule.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.25/js/bootstrap-colorpicker-module.min.js"></script>
-   
+
+    <!-- Mes Librairies Angular -->
+    <script type="text/javascript" src="js/angular-ui-notification.min.js"></script>
     <script type="text/javascript" src="js/angular-bootstrap-calendar-tpls.js"></script>
-    
     <script type="text/javascript" src="js/angular-locale_fr-fr.js"></script>
 
+    <!-- Script de l'application -->
     <script type="text/javascript" src="app/app.js"></script>
     <script type="text/javascript" src="app/modal.js"></script>
+
+    <script type="text/javascript" src="app/notifConfig.js"></script>
+    <script type="text/javascript" src="app/notifService.js"></script>
 
     <!-- Angular Material Library -->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.1/angular-material.min.js"></script>
@@ -61,27 +74,61 @@
   </div><!-- /.container-fluid -->
 </nav>
 <div class="row">
-  <div class="col-md-1"><h3>Filtres</h3></div>
-  <div class="col-md-11">
-   
-    <div class="col-md-5">
-      <h3 class="centrer">Départements</h3>
-      <button type="button" class="btn btn-primary compCentrer">Choisir</button>
+  <div class="col-md-12"><h3 class="centrer">Filtres</h3></div>
+</div>
+<div class="row">
+  
+  <div class="col-md-12">
+    <div class="col-md-6">
+      <div class="centrer">
+        <table class="table table-bordered">
+          <thead>
+            <th colspan="8" class="centrer">Départements</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="searchable-container" ng-repeat="item in departments">
+                <div class="items col-xs-12">
+                    <div class="info-block block-info clearfix">
+                        
+                        <div data-toggle="buttons" ng-click="majAffDep(item)" class="btn-group bizmoduleselect">
+                            <label class="btn btn-default active">
+                                <div class="bizcontent">
+                                    <input type="checkbox" name="var_id[]" autocomplete="off" value="">
+                                    <span class="glyphicon glyphicon-ok glyphicon-lg"></span>
+                                    <h5>{{item.nom}}</h5>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+              </td>
+              <td ng-if="departments.length == 0"> Aucun département</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
    
     <div class="col-md-6">
-      <h3 class="centrer">Type</h3>
-      <button type="button" class="btn btn-primary compCentrer">Choisir</button>
+      <table class="table table-bordered centrer">
+          <thead>
+            <th colspan="8" class="centrer">Métiers</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td ng-repeat="item in metiers">{{item.nom}}</td>
+              <td ng-if="metiers.length == 0"> Aucun département</td>
+            </tr>
+          </tbody>
+        </table>
     </div>
   </div>
 </div>
 
 <hr>
 
-<div>
-  
-
-</div>
 
 <div class="row">
   <br class="visible-xs visible-sm">
@@ -106,7 +153,74 @@
 
 <div id="addHoraire" class="collapse">
   <hr>
-  fasf
+    <table class="table table-bordered">
+
+    <thead>
+      <tr>
+        <th>Département</th>
+        <th>Employé</th>
+        <th>Date</th>
+        <th>Heure Début</th>
+        <th>Heure Fin</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <i class="fa fa-circle" style="font-size:25px" ng-style="styleDep"></i><span style="font-size: 15px;margin-left: 8px;font-weight: bold">{{depSel}}</span>
+        </td>
+        <td>  
+          <select class="form-control" ng-change="majPerson()" ng-model="myPerson" style="width: 150px">
+            <option ng-repeat="person in persons" value="{{person.id}}">{{person.nom}} {{person.prenom}}</option>
+          </select>
+          <span ng-if="myPerson == null" style="color:red">Veuillez choisir un employé !</span>
+        </td>
+        <td>
+          <p class="input-group" style="max-width: 250px">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              uib-datepicker-popup="dd MMMM yyyy"
+              ng-model="event.startsAt"
+              is-open="event.startOpen"
+              close-text="Close" >
+            <span class="input-group-btn">
+              <button
+                type="button"
+                class="btn btn-default"
+                ng-click="vm.toggle($event, 'startOpen', event)">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </button>
+            </span>
+          </p>
+        </td>
+        <td>
+          <div
+              uib-timepicker
+              ng-model="event.startsAt"
+              hour-step="1"
+              minute-step="15"
+              show-meridian="false">
+            </div>
+        </td>
+        <td>
+          <div
+              uib-timepicker
+              ng-model="event.endsAt"
+              hour-step="1"
+              minute-step="15"
+              show-meridian="false">
+            </div>
+        </td>
+      </tr>
+    </tbody>
+    
+  </table>
+
+  <div class="centrer">
+      <button type="button" class="btn btn-primary" ng-click="addHoraire()">Ajouter</button>
+    </div>
 </div>
 
 <hr>
@@ -153,7 +267,7 @@
     on-event-click="vm.eventClicked(calendarEvent)"
     on-event-times-changed="vm.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
     cell-is-open="vm.cellIsOpen"
-    day-view-start="06:00"
+    day-view-start="00:00"
     day-view-end="23:59"
     day-view-split="30"
     cell-modifier="vm.modifyCell(calendarCell)"
