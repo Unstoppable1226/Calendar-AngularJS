@@ -32,10 +32,10 @@ appCal.controller('KitchenSinkCtrl', function($timeout, $scope, moment, alert, c
     $scope.departmentsSel = [];
     $scope.deps = [ // Stocke les codes couleurs nécessaires pour les départements
       {}, // Premier objet vide
-      {primary: '#00695c', secondary: '#00695c'}, 
-      {primary: '#388e3c', secondary: '#388e3c'},
-      {primary: '#039be5', secondary: '#039be5'},
-      {primary: '#f57c00', secondary: '#f57c00'},
+      {primary: '#00695c', secondary: '#93C8C2'}, 
+      {primary: '#388e3c', secondary: '#81D285'},
+      {primary: '#039be5', secondary: '#8AC6E4'},
+      {primary: '#f57c00', secondary: '#F4BF8A'},
       {primary: '#6d4c41', secondary: '#6d4c41'},
       {primary: '#512da8', secondary: '#512da8'},
       {primary: '#33691E', secondary: '#33691E'}, 
